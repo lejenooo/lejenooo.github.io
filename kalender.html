@@ -1,0 +1,56 @@
+<html>
+<head>
+<title>Kalender Jawa Komariah</title>
+<style>
+body {background: #0f172a;color: white;font-family: Arial; display: flex; justify-content: center; align-items: center;height: 100vh;}
+.kotak { background: #2244a4;padding: 20px;border-radius: 10px;text-align: center;}
+#jam {font-size: 25px; margin-bottom: 10px; }
+</style>
+</head>
+<body>
+<div class="kotak">
+<h3>Kalender Jawa Komariah</h3>
+<div id="jam"></div>
+<div id="tanggal"></div>
+<div id="hari"></div>
+<div id="neptu"></div> <!-- TAMBAHAN -->
+<div id="komariah"></div>
+</div>
+<script>
+let hariJawa = ["Senen","Selasa","Rebo","Kemis","Jemuwah","Setu","Ngahad"];
+let pasaran = ["Pahing","Pon","Wage","Kliwon","Legi"];
+let bulanJawa = ["Sura","Sapar","Mulud","Bakda Mulud","Jumadilawal","Jumadilakhir","Rejeb","Ruwah","Pasa","Sawal","Dulkangidah","Besar"];
+// nilai neptu (simple)
+let nilaiHari = [4,3,7,8,6,9,5];
+let nilaiPasar = [5,9,7,4,8];
+let patokan = new Date("2024-01-01");
+function jalan() {
+let sekarang = new Date();
+// jam
+let jam = sekarang.getHours();
+let menit = sekarang.getMinutes();
+let detik = sekarang.getSeconds();
+document.getElementById("jam").innerHTML =jam + ":" + menit + ":" + detik;
+// tanggal biasa
+document.getElementById("tanggal").innerHTML =sekarang.toLocaleDateString();
+// hari jawa
+let hIndex = (sekarang.getDay() + 6) % 7;
+let h = hariJawa[hIndex];
+let selisih = Math.floor((sekarang - patokan) / (1000*60*60*24));
+let pIndex = selisih % 5;
+let p = pasaran[pIndex];document.getElementById("hari").innerHTML =
+"Hari : " + h + " " + p;
+// NEPTU (TAMBAHAN)
+let neptu = nilaiHari[hIndex] + nilaiPasar[pIndex];
+document.getElementById("neptu").innerHTML =
+"Neptu : " + neptu;
+// komariah
+let isl = new Intl.DateTimeFormat("id-TN-u-ca-islamic", {day: "numeric",month: "numeric",year: "numeric"}).formatToParts(sekarang);
+let d, m, y;
+for (let i = 0; i < isl.length; i++) {if (isl[i].type == "day") d = isl[i].value;if (isl[i].type == "month") m = isl[i].value;
+if (isl[i].type == "year") y = isl[i].value;}
+let namaBulan = bulanJawa[m - 1];let tahunJawa = parseInt(y) + 512;document.getElementById("komariah").innerHTML ="Komariah : " + d + " " + namaBulan + " " + tahunJawa + " AJ";}
+setInterval(jalan, 1000);jalan();
+</script>
+</body>
+</html>
